@@ -32,7 +32,6 @@ class Solution {
         
         bool get_route(TreeNode* root, vector<route_t>& route, TreeNode* target) 
         {
-            //0 means left, and 1 means right
             if (root == nullptr) {
                 return false;
             }
