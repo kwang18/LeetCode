@@ -9,42 +9,45 @@
  */
 class Solution {
     public:
+        enum route_t {left, right};
+        
         TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
             //visit the tree, find out how to get to p and q from root, then find out the common route.
-            vector<int> proute;
-            vector<int> qroute;
+            vector<route_t> proute;
+            vector<route_t> qroute;
             inorder(root, proute, p);
             inorder(root, qroute, q);
-            int minl = min(proute.size(), qroute.size());
-            for (int i = 0; i < minl; ++i) {
+            int min_route_size = min(proute.size(), qroute.size());
+            for (int i = 0; i < min_route_size; ++i) {
                 if (proute[i] != qroute[i]) {
                     return root;
-                }else if (proute[i] == 0) {
+                } else if (proute[i] == left) {
                     root = root->left;
-                }else{
+                } else {
                     root = root->right;
                 }
             }
             return root;
         }
-        int inorder(TreeNode* root, vector<int>& route, TreeNode* target) 
+        
+        bool inorder(TreeNode* root, vector<route_t>& route, TreeNode* target) 
         {
             //0 means left, and 1 means right
             if (root == nullptr) {
-                return 0;
+                return false;
             }
             if (root == target) {
-                return 1;
+                return true;
             }
-            route.push_back(0);
-            if (inorder(root->left, route, target) == 1) {
-                return 1;
+            route.push_back(left);
+            if (inorder(root->left, route, target) == true) {
+                return true;
             }
-            route[route.size()-1] = 1;
-            if (inorder(root->right, route, target) == 1) {
-                return 1;
+            route[route.size()-1] = right;
+            if (inorder(root->right, route, target) == true) {
+                return true;
             };
             route.pop_back();
-            return 0;
-        }
+            return false;
+        }        
 };
