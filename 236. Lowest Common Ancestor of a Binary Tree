@@ -15,8 +15,8 @@ class Solution {
             //visit the tree, find out how to get to p and q from root, then find out the common route.
             vector<route_t> proute;
             vector<route_t> qroute;
-            inorder(root, proute, p);
-            inorder(root, qroute, q);
+            get_route(root, proute, p);
+            get_route(root, qroute, q);
             int min_route_size = min(proute.size(), qroute.size());
             for (int i = 0; i < min_route_size; ++i) {
                 if (proute[i] != qroute[i]) {
@@ -30,7 +30,7 @@ class Solution {
             return root;
         }
         
-        bool inorder(TreeNode* root, vector<route_t>& route, TreeNode* target) 
+        bool get_route(TreeNode* root, vector<route_t>& route, TreeNode* target) 
         {
             //0 means left, and 1 means right
             if (root == nullptr) {
@@ -40,11 +40,11 @@ class Solution {
                 return true;
             }
             route.push_back(left);
-            if (inorder(root->left, route, target) == true) {
+            if (get_route(root->left, route, target) == true) {
                 return true;
             }
             route[route.size()-1] = right;
-            if (inorder(root->right, route, target) == true) {
+            if (get_route(root->right, route, target) == true) {
                 return true;
             };
             route.pop_back();
