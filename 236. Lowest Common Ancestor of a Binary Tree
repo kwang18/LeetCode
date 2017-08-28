@@ -8,46 +8,46 @@
  * };
  */
 class Solution {
-    public:
-        enum route_t {LEFT, RIGHT};
+    private:
+        TreeNode* result;
+        bool resultFound = false;
         
+    public:
         TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) 
         {
-            //visit the tree, find out how to get to p and q from root, then find out the common route.
-            list<route_t> proute;
-            list<route_t> qroute;
-            find_route(root, proute, p);
-            find_route(root, qroute, q);
-            list<route_t>::iterator pit = proute.begin();
-            list<route_t>::iterator qit = qroute.begin();
-            for (; pit != proute.end() && qit != qroute.end(); ++pit, ++qit) {
-                if (*pit != *qit) {
-                    return root;
-                } else if (*pit == LEFT) {
-                    root = root->left;
-                } else {
-                    root = root->right;
-                }
-            }
-            return root; 
+            //post order recursion
+            result = root;
+            bool isDescendantP = false, isDescendantQ = false;
+            findLowestCommonAncestor(root, p, q, isDescendantP, isDescendantQ);
+            return result; 
         }
         
-        bool find_route(TreeNode* root, list<route_t>& route, TreeNode* target) 
+        void findLowestCommonAncestor(TreeNode* root, const TreeNode* p, const TreeNode* q, bool& isDescendantP, bool& isDescendantQ) 
         {
-            if (root == nullptr) {
-                return false;
+            if (root == nullptr || resultFound) {
+                return;
             }
-            if (root == target) {
-                return true;
+            bool isLeftDescendantP = false, isLeftDescendantQ = false;
+            findLowestCommonAncestor(root->left, p, q, isDescendantP, isDescendantQ);
+            if (resultFound) {
+                return;
+            } else {
+                //need to save the flags and reset here. The left child's descendants are not descendants of the right child. 
+                isLeftDescendantP = isDescendantP;
+                isLeftDescendantQ = isDescendantQ;
+                isDescendantP = false;
+                isDescendantQ = false;
             }
-            if (find_route(root->left, route, target)) {
-                route.push_front(LEFT);
-                return true;
+            findLowestCommonAncestor(root->right, p, q, isDescendantP, isDescendantQ);
+            if (resultFound) {
+                return;
             }
-            if (find_route(root->right, route, target)) {
-                route.push_front(RIGHT);
-                return true;
-            };
-            return false;
+            //put together the result flags for parents and both children
+            isDescendantP = isDescendantP || isLeftDescendantP || root == p;
+            isDescendantQ = isDescendantQ || isLeftDescendantQ || root == q;
+            if (isDescendantP && isDescendantQ) {
+                resultFound = true;
+                result = root;
+            }
         }
 };
