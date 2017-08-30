@@ -1,0 +1,54 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+    //Time complexity : O(n), Space complexity : O(n)
+    private:
+        TreeNode* result;
+        bool resultFound = false;
+        
+    public:
+        TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) 
+        {
+            //post order recursion
+            result = root;
+            bool isDescendantP = false, isDescendantQ = false;
+            findLowestCommonAncestor(root, p, q, isDescendantP, isDescendantQ);
+            return result; 
+        }
+        
+        void findLowestCommonAncestor(TreeNode* root, const TreeNode* p, const TreeNode* q, bool& isDescendantP, bool& isDescendantQ) 
+        {
+            if (root == nullptr || resultFound) {
+                return;
+            }
+            bool isLeftDescendantP = false, isLeftDescendantQ = false;
+            findLowestCommonAncestor(root->left, p, q, isDescendantP, isDescendantQ);
+            if (resultFound) {
+                return;
+            } else {
+                //need to save the flags and reset here. The left child's descendants are not descendants of the right child. 
+                isLeftDescendantP = isDescendantP;
+                isLeftDescendantQ = isDescendantQ;
+                isDescendantP = false;
+                isDescendantQ = false;
+            }
+            findLowestCommonAncestor(root->right, p, q, isDescendantP, isDescendantQ);
+            if (resultFound) {
+                return;
+            }
+            //put together the result flags for parents and both children
+            isDescendantP = isDescendantP || isLeftDescendantP || root == p;
+            isDescendantQ = isDescendantQ || isLeftDescendantQ || root == q;
+            if (isDescendantP && isDescendantQ) {
+                resultFound = true;
+                result = root;
+            }
+        }
+};
