@@ -1,0 +1,38 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+//Time : O(n) Space : O(h), where n is number of nodes in the tree and h is height of tree
+class Solution {
+    vector<int> mostLeft, mostRight;
+    public:
+        int widthOfBinaryTree(TreeNode* root) {
+            findTwoEnds(root, 0, 1);
+            int maxDiff = 0;
+            for (int i = 0; i < mostLeft.size(); ++i) {
+                maxDiff = max(maxDiff, mostRight[i] - mostLeft[i] + 1);
+            }
+            return maxDiff;
+        }
+    
+        void findTwoEnds(TreeNode* root, int current, int level) 
+        {
+            if (root == nullptr) {
+                return;
+            }
+            if (mostLeft.size() < level) {
+                mostLeft.push_back(current);
+                mostRight.push_back(current);
+            } else if (mostRight[level - 1] < current) {
+                mostRight[level - 1] = current;
+            }
+            int nextCurrent = current * 2;
+            findTwoEnds(root->left, nextCurrent, level + 1);
+            findTwoEnds(root->right, nextCurrent + 1, level +1);
+        }
+};
