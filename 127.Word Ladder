@@ -1,0 +1,53 @@
+//Time: O(n^2), Space: O (n)
+class Solution {
+    private:
+        int resultLength = 0;
+    public:
+        int ladderLength(string beginWord, string endWord, vector<string>& wordList) 
+        {
+            vector<string> beginWord_s;
+            beginWord_s.push_back(beginWord);
+            ladderLength(beginWord_s, endWord, wordList, 0);
+            return resultLength;
+        }
+    
+        void ladderLength(vector<string> beginWord, string endWord, vector<string>& wordList, int length) 
+        {
+            for (int i = 0; i < beginWord.size(); ++ i) {
+                if (distance(beginWord[i], endWord) == 1) {
+                    resultLength = length;
+                    return ;
+                }
+            }
+            if (wordList.empty()) {
+                return false;
+            } 
+            vector<string> distance1;
+            int l = wordList.size();
+            for (int j = 0; j < beginWord.size(); ++ j) {
+                for (int i = 0; i < l; ++ i) {
+                    if (distance(beginWord[j], wordList[i]) == 1) {
+                        distance1.push_back(wordList[i]);
+                        wordList.erase(wrodList.begin() + i);
+                        -- l;
+                        -- i;
+                    }
+            }
+            if (distance1.empty()) {
+                return;
+            }
+            ladderLength(distance1, endWord, wordList, length + 1);
+        }
+        
+        int distance(string a, string b) 
+        {
+            int l = a.length();
+            int count = 0;
+            for (int i = 0; i < l; ++ i) {
+                if (a[i] != b[i]) {
+                    ++ count;
+                }
+            }
+            return count;
+        }
+};
