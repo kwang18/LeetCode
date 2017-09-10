@@ -7,16 +7,19 @@ class Solution {
         {
             vector<string> beginWord_s;
             beginWord_s.push_back(beginWord);
-            ladderLength(beginWord_s, endWord, wordList, 0);
-            return resultLength;
+            if (ladderLength(beginWord_s, endWord, wordList, 0)) {
+                return resultLength + 2;
+            } else {
+                return 0;
+            }
         }
     
-        void ladderLength(vector<string> beginWord, string endWord, vector<string>& wordList, int length) 
+        bool ladderLength(vector<string> beginWord, string endWord, vector<string>& wordList, int length) 
         {
             for (int i = 0; i < beginWord.size(); ++ i) {
                 if (distance(beginWord[i], endWord) == 1) {
                     resultLength = length;
-                    return ;
+                    return true;
                 }
             }
             if (wordList.empty()) {
@@ -34,9 +37,9 @@ class Solution {
                     }
             }
             if (distance1.empty()) {
-                return;
+                return false;
             }
-            ladderLength(distance1, endWord, wordList, length + 1);
+            return ladderLength(distance1, endWord, wordList, length + 1);
         }
         
         int distance(string a, string b) 
