@@ -1,5 +1,7 @@
 //Time: O (2 ^ n) Space: O(2 ^ n)
 class Solution {
+    //find the solution for  grayCode(n - 1) and the second half for grayCode(n) is grayCode(n - 1) in reverse order with every element plus
+    //     1 << (n - 1)
     public:
         vector<int> grayCode(int n) {
             if (n == 0) {
