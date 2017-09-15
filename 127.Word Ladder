@@ -7,7 +7,7 @@ class Solution {
             beginWords.push_back(beginWord);
             int length = 0;
             while (true) {
-                for (int i = 0; i < beginWords.size(); ++ i) {
+                for (int i = 0; i < beginWords.size(); ++i) {
                     if (distance(beginWords[i], endWord) == 1) {
                         return length + 2;
                     }
@@ -17,20 +17,20 @@ class Solution {
                 } 
                 vector<string> distance1;
                 int l = wordList.size();
-                for (int j = 0; j < beginWords.size(); ++ j) {
-                    for (int i = 0; i < l; ++ i) {
+                for (int j = 0; j < beginWords.size(); ++j) {
+                    for (int i = 0; i < l; ++i) {
                         if (distance(beginWords[j], wordList[i]) == 1) {
                             distance1.push_back(wordList[i]);
                             wordList.erase(wrodList.begin() + i);
-                            -- l;
-                            -- i;
+                            --l;
+                            --i;
                     }
                 }
                 if (distance1.empty()) {
                     break;
                 }
                 beginWords = distance1;
-                ++ length;
+                ++length;
              }
              return 0;
         }
@@ -39,9 +39,9 @@ class Solution {
         {
             int l = a.length();
             int count = 0;
-            for (int i = 0; i < l; ++ i) {
+            for (int i = 0; i < l; ++i) {
                 if (a[i] != b[i]) {
-                    ++ count;
+                    ++count;
                 }
             }
             return count;
