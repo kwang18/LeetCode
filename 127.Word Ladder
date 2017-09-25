@@ -3,39 +3,33 @@ class Solution {
     public:
         int ladderLength(string beginWord, string endWord, vector<string>& wordList) 
         {
-            vector<string> beginWords;
-            beginWords.push_back(beginWord);
-            int length = 0;
-            while (true) {
-                for (int i = 0; i < beginWords.size(); ++i) {
-                    if (distance(beginWords[i], endWord) == 1) {
-                        return length + 2;
+            //pair<string, int> stands for a string and its current level in the ladder
+            queue<pair<string, int>> ladderSteps;
+            ladderSteps.push(pair<string, int>(beginWord, 1));
+            List<string> wordListCopy;
+            for (int i = 0; i < wordList.size(); ++i) {
+                wordListCopy.push_back(wordList[i]);
+            }
+            while (!ladderSteps.empty()) {
+                pair<string, int> currentStep = ladderSteps.begin();
+                ladderSteps.pop();
+                if (canTransform(currentStep.first, endWord)) {
+                    return currentStep.second + 1;
+                }
+                List<string>::iterator iter = wordListCopy.begin(); 
+                while (iter != wordListCopy.end()){
+                    if (canTransform(*iter, currentStep.first)) {
+                        ladderSteps.push(pair<string, int>(*iter, currentStep.second + 1));
+                        wordListCopy.erase(iter++);
+                    } else {
+                        ++iter;
                     }
                 }
-                if (wordList.empty()) {
-                    break;
-                } 
-                vector<string> distance1;
-                int l = wordList.size();
-                for (int j = 0; j < beginWords.size(); ++j) {
-                    for (int i = 0; i < l; ++i) {
-                        if (distance(beginWords[j], wordList[i]) == 1) {
-                            distance1.push_back(wordList[i]);
-                            wordList.erase(wrodList.begin() + i);
-                            --l;
-                            --i;
-                    }
-                }
-                if (distance1.empty()) {
-                    break;
-                }
-                beginWords = distance1;
-                ++length;
-             }
-             return 0;
+            }
+            return 0;
         }
         
-        int distance(string a, string b) 
+        bool canTransform(string a, string b) 
         {
             int l = a.length();
             int count = 0;
@@ -44,6 +38,6 @@ class Solution {
                     ++count;
                 }
             }
-            return count;
+            return count == 1;
         }
 };
