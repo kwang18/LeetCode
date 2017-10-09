@@ -4,14 +4,15 @@ class Solution {
         int ladderLength(string beginWord, string endWord, vector<string>& wordList) 
         {
             //pair<string, int> stands for a string and its current level in the ladder
-            queue<pair<string, int>> ladderSteps;
-            ladderSteps.push(pair<string, int>(beginWord, 1));
+            using pair<string, int> possibleStep;
+            queue<possibleStep> ladderSteps;
+            ladderSteps.push(possibleStep(beginWord, 1));
             List<string> wordListCopy;
             for (int i = 0; i < wordList.size(); ++i) {
                 wordListCopy.push_back(wordList[i]);
             }
             while (!ladderSteps.empty()) {
-                pair<string, int> currentStep = ladderSteps.begin();
+                possibleStep currentStep = ladderSteps.begin();
                 ladderSteps.pop();
                 if (canTransform(currentStep.first, endWord)) {
                     return currentStep.second + 1;
@@ -19,7 +20,7 @@ class Solution {
                 List<string>::iterator iter = wordListCopy.begin(); 
                 while (iter != wordListCopy.end()){
                     if (canTransform(*iter, currentStep.first)) {
-                        ladderSteps.push(pair<string, int>(*iter, currentStep.second + 1));
+                        ladderSteps.push(possibleStep(*iter, currentStep.second + 1));
                         wordListCopy.erase(iter++);
                     } else {
                         ++iter;
@@ -31,9 +32,8 @@ class Solution {
         
         bool canTransform(string a, string b) 
         {
-            int l = a.length();
             int count = 0;
-            for (int i = 0; i < l; ++i) {
+            for (int i = 0; i < a.length(); ++i) {
                 if (a[i] != b[i]) {
                     ++count;
                 }
