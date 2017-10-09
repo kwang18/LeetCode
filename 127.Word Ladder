@@ -1,0 +1,50 @@
+//Time: O(n^2), Space: O (n)
+class Solution {
+    public:
+        int ladderLength(string beginWord, string endWord, vector<string>& wordList) 
+        {
+            //pair<string, int> stands for a string and its current level in the ladder
+            using possibleStep = pair<string, int>;
+            queue<possibleStep> ladderSteps;
+            ladderSteps.push(possibleStep(beginWord, 1));
+            list<string> wordListCopy;
+            //Note that it is also required that the endWord is in the wordList
+            bool endWordinList = false;
+            for (int i = 0; i < wordList.size(); ++i) {
+                if (wordList[i] == endWord) {
+                    endWordinList = true;
+                }
+                wordListCopy.push_back(wordList[i]);
+            }
+            if (endWordinList) {
+                while (!ladderSteps.empty()) {
+                    possibleStep currentStep = ladderSteps.front();
+                    ladderSteps.pop();
+                    if (canTransform(currentStep.first, endWord)) {
+                        return currentStep.second + 1;
+                    }
+                    list<string>::iterator iter = wordListCopy.begin(); 
+                    while (iter != wordListCopy.end()){
+                        if (canTransform(*iter, currentStep.first)) {
+                            ladderSteps.push(possibleStep(*iter, currentStep.second + 1));
+                            wordListCopy.erase(iter++);
+                        } else {
+                            ++iter;
+                        }
+                    }
+                }
+            }
+            return 0;
+        }
+        
+        bool canTransform(string a, string b) 
+        {
+            int count = 0;
+            for (int i = 0; i < a.length(); ++i) {
+                if (a[i] != b[i]) {
+                    ++count;
+                }
+            }
+            return count == 1;
+        }
+};
