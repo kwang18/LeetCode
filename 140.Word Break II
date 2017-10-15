@@ -1,0 +1,25 @@
+using CanBreakAndStringSoFar = pair<bool, vector<string>>;
+class Solution {
+    public:
+        vector<string> wordBreak(string s, vector<string>& wordDict) {
+            map<string, bool> wordDictMap;
+            for (int i = 0; i < wordDict.size(); ++i) {
+                wordDictMap[wordDict[i]] = true;
+            }
+            vector<CanBreakAndStringSoFar> canBreak(s.length() + 1, CanBreakAndStringSoFar(false, vector<string>()));
+            canBreak[0].first = true;
+            canBreak[0].second.push_back("");
+            for (int i = 1; i <= s.length(); ++i) {//i is the index in the array, refer to the i - 1 character
+                for (int j = 0; j < i; ++j) {//j is the indexes before i
+                    if (canBreak[j].first && wordDictMap.find(s.substr(j, i - j)) != wordDictMap.end()) {
+                        canBreak[i].first = true;
+                        for (int k = 0; k < canBreak[j].second.size(); ++k) {
+                            string needSpaceOrNot = canBreak[j].second[k] == "" ? "" : " ";
+                            canBreak[i].second.push_back(canBreak[j].second[k] + needSpaceOrNot + s.substr(j, i - j));
+                        }
+                    }
+                }
+            }
+            return canBreak[s.length()].second;
+        }
+};
