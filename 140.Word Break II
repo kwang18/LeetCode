@@ -1,25 +1,40 @@
-using CanBreakAndStringSoFar = pair<bool, vector<string>>;
+//This is a hard problem, but I met similar one in some OA. 
+//Assume: s.length() = n;
+//Original version used vector to store the strings
+//Time: In theory, we should have O(n * 4^n) Time Complexity. n for the outer loop and for each k, it will finally have at most 2^n 
+//ways to insert strings, and we have the costing push back. 
+//  Expecting that finally the ways to inserting spaces is constant, then the Time Complexity should be O(n^n)
+//Space: O(n* 2^n) in worst case. And will reduce to O(n) if finally constant ways to interpret this string.
+//New version uses list.
+//Time: worst: O(n * 2^n), Expected:(n^2)
+//Space: same as above
 class Solution {
+    using CanBreakAndStringSoFar = pair<bool, list<string>>;
     public:
         vector<string> wordBreak(string s, vector<string>& wordDict) {
             map<string, bool> wordDictMap;
             for (int i = 0; i < wordDict.size(); ++i) {
                 wordDictMap[wordDict[i]] = true;
             }
-            vector<CanBreakAndStringSoFar> canBreak(s.length() + 1, CanBreakAndStringSoFar(false, vector<string>()));
+            vector<CanBreakAndStringSoFar> canBreak(s.length() + 1, CanBreakAndStringSoFar(false, list<string>()));
             canBreak[0].first = true;
             canBreak[0].second.push_back("");
             for (int i = 1; i <= s.length(); ++i) {//i is the index in the array, refer to the i - 1 character
                 for (int j = 0; j < i; ++j) {//j is the indexes before i
                     if (canBreak[j].first && wordDictMap.find(s.substr(j, i - j)) != wordDictMap.end()) {
                         canBreak[i].first = true;
-                        for (int k = 0; k < canBreak[j].second.size(); ++k) {
-                            string needSpaceOrNot = canBreak[j].second[k] == "" ? "" : " ";
-                            canBreak[i].second.push_back(canBreak[j].second[k] + needSpaceOrNot + s.substr(j, i - j));
+                        for (auto iter = canBreak[j].second.begin(); iter != canBreak[j].second.end(); ++iter) {
+                            string needSpaceOrNot = *iter == "" ? "" : " ";
+                            canBreak[i].second.push_back(*iter + needSpaceOrNot + s.substr(j, i - j));
                         }
                     }
                 }
             }
-            return canBreak[s.length()].second;
+            vector<string> result(canBreak[s.length()].second.size(), "");
+            int i = 0;
+            for (auto iter = canBreak[s.length()].second.begin(); iter != canBreak[s.length()].second.end(); ++i, ++iter) {
+                result[i] = *iter;
+            }
+            return result;
         }
 };
