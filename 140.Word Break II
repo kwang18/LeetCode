@@ -1,0 +1,53 @@
+//This is a hard problem, but I met similar one in some OA. 
+//Assume: s.length() = n, wordDict.size() = m;
+//Time: constructmap: O(mlogm)  Space:  constructmap: O(m)    
+//      loop: O(n^2 * log(m))           loop:O(n^2)
+//      formString:O(2^n * n)           formString:O(2^n * n)
+//In common cases where there are not too much ambiguity in the string, the formString operation takes only O(n) time and space,
+//  and loop time dominates.
+
+class Solution {
+    using CanBreakAndLastIdx = pair<bool, list<int>>;
+    public:
+        vector<string> wordBreak(string s, vector<string>& wordDict) {
+            unordered_map<string, bool> wordDictMap;
+            for (int i = 0; i < wordDict.size(); ++i) {
+                wordDictMap[wordDict[i]] = true;
+            }
+            vector<CanBreakAndLastIdx> canBreak(s.length() + 1, CanBreakAndLastIdx(false, list<int>()));
+            canBreak[0].first = true;
+            for (int i = 1; i <= s.length(); ++i) {//i is the index in the array, refer to the i - 1 character
+                for (int j = 0; j < i; ++j) {//j is the indexes before i
+                    if (canBreak[j].first && wordDictMap.find(s.substr(j, i - j)) != wordDictMap.end()) {
+                        canBreak[i].first = true;
+                        canBreak[i].second.push_back(j);
+                    }
+                }
+            }
+            if (!canBreak[s.length()].first) {
+                vector<string> result;
+                return result;
+            } else {
+                list<string> resultList;
+                formStrings(s, resultList, canBreak, "", s.length());
+                vector<string> result(resultList.size(), "");
+                int i = 0;
+                for (auto iter = resultList.begin(); iter != resultList.end(); ++i, ++iter) {
+                    result[i] = *iter;
+                }
+                return result;
+            }
+        }
+    
+        void formStrings(string& s, list<string>& result, vector<CanBreakAndLastIdx>& canBreak, string currentString, int currentIdx) {
+            if (currentIdx == 0) {
+                result.push_back(currentString);
+                return;
+            }
+            for (auto listIt = canBreak[currentIdx].second.begin(); listIt != canBreak[currentIdx].second.end(); ++listIt) {
+                int lastIdx = *listIt;
+                string withSpaceOrNot = currentString == "" ? "" : " ";
+                formStrings(s, result, canBreak, s.substr(lastIdx, currentIdx - lastIdx) + withSpaceOrNot + currentString, lastIdx);
+            }
+        }
+};
